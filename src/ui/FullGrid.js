@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import Square from './Square';
+import Puzzle from '../logic/Puzzle';
 
 class FullGrid extends Component {
   constructor() {
     super();
+    this.state = {puzzle: new Puzzle()};
   }
   render() {
     let gridHeight = window.innerHeight * 0.8;
@@ -22,14 +24,16 @@ class FullGrid extends Component {
       flexWrap: 'wrap'
     };
     let squareStyles = {
-      height: gridHeight / 9,
-      width: gridWidth / 9
+      height: gridHeight / this.state.puzzle.rows,
+      width: gridWidth / this.state.puzzle.columns
     };
+    let grid = this.state.puzzle.getClueGrid();
     return (
       <div style={styles}>
-        {Array(81).fill(1).map((_, i) =>
-          <Square style={squareStyles} key={i} id={i}></Square>
-        )}
+        {grid.map((row, row_i) =>
+          row.map((square, col_i) =>
+            <Square style={squareStyles} key={row_i + '_' + col_i} value={square}></Square>
+        ))}
       </div>
 
     );

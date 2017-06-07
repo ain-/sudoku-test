@@ -27,7 +27,7 @@ class Square extends Component {
     return (
       <div style={mergedStyles}>
         <div style={numberStyles}>
-          {this.props.id}
+          {this.props.value}
         </div>
       </div>
     );
