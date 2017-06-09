@@ -1,17 +1,42 @@
 import React, {Component} from 'react';
+import BorderType from './BorderType';
 
 class Square extends Component {
+
+  convertToBorderCss(borderTypes) {
+    let css = '';
+    borderTypes.forEach(x =>
+      css += this.getBorderSize(x) + 'px '
+    );
+    return css;
+  }
+
+  getBorderSize(borderType) {
+    switch (borderType) {
+      case BorderType.OUTER:
+        return 4;
+      case BorderType.INNER_BOX:
+        return 2;
+      case BorderType.NORMAL:
+        return 1;
+      default:
+        return undefined;
+    }
+  }
+
   render() {
     let {style} = this.props;
-    let border = 1;
+    let {borderTypes} = this.props;
+
     let mergedStyles = Object.assign({
       borderStyle: 'solid',
-      borderWidth: border + 'px',
+      borderWidth: this.convertToBorderCss(borderTypes),
       textAlign: 'center',
       fontSize: style.width / 2
     }, style);
-    mergedStyles.width -= border * 2;
-    mergedStyles.height -= border * 2;
+
+    mergedStyles.width -= this.getBorderSize(borderTypes[1]) + this.getBorderSize(borderTypes[3]);
+    mergedStyles.height -= this.getBorderSize(borderTypes[0]) + this.getBorderSize(borderTypes[2]);
 
     let numberMargin = style.width / 2;
 

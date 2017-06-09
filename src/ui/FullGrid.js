@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Square from './Square';
 import Puzzle from '../logic/Puzzle';
+import BorderType from './BorderType';
 
 class FullGrid extends Component {
   constructor() {
@@ -32,7 +33,11 @@ class FullGrid extends Component {
       <div style={styles}>
         {grid.map((row, row_i) =>
           row.map((square, col_i) =>
-            <Square style={squareStyles} key={row_i + '_' + col_i} value={square}></Square>
+            <Square style={squareStyles}
+              key={row_i + '_' + col_i}
+              value={square}
+              borderTypes={[BorderType.OUTER, BorderType.INNER_BOX, BorderType.NORMAL, BorderType.NORMAL]}>
+            </Square>
         ))}
       </div>
 
