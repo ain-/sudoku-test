@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import Square from './Square';
 import Puzzle from '../logic/Puzzle';
-import BorderType from './BorderType';
+import BorderType from '../logic/BorderType';
 
 class FullGrid extends Component {
   constructor() {
     super();
-    this.state = {puzzle: new Puzzle()};
+    this.state = {puzzle: new Puzzle(6, 3, 2)};
   }
   render() {
     let gridHeight = window.innerHeight * 0.8;
@@ -36,7 +36,7 @@ class FullGrid extends Component {
             <Square style={squareStyles}
               key={row_i + '_' + col_i}
               value={square}
-              borderTypes={[BorderType.OUTER, BorderType.INNER_BOX, BorderType.NORMAL, BorderType.NORMAL]}>
+              borderTypes={this.state.puzzle.getBorderTypes(row_i, col_i)}>
             </Square>
         ))}
       </div>

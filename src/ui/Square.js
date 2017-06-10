@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import BorderType from './BorderType';
+import BorderType from '../logic/BorderType';
 
 class Square extends Component {
 
