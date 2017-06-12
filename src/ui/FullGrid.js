@@ -6,7 +6,7 @@ import BorderType from '../logic/BorderType';
 class FullGrid extends Component {
   constructor() {
     super();
-    this.state = {puzzle: new Puzzle(6, 3, 2)};
+    this.state = {puzzle: new Puzzle(8, 4, 2)};
   }
   render() {
     let gridHeight = window.innerHeight * 0.8;
@@ -25,8 +25,8 @@ class FullGrid extends Component {
       flexWrap: 'wrap'
     };
     let squareStyles = {
-      height: gridHeight / this.state.puzzle.rows,
-      width: gridWidth / this.state.puzzle.columns
+      height: gridHeight / this.state.puzzle.rowCount,
+      width: gridWidth / this.state.puzzle.columnCount
     };
     let grid = this.state.puzzle.getClueGrid();
     return (

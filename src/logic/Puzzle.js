@@ -2,24 +2,40 @@ import BorderType from './BorderType';
 
 class Puzzle {
   constructor(size, boxWidth, boxHeight) {
-    this.rows = size;
-    this.columns = size;
+    this.rowCount = size;
+    this.columnCount = size;
     this.boxWidth = boxWidth;
     this.boxHeight = boxHeight;
-    let rows = new Array(size);
-    for (let i = 0; i < rows.length; i++) {
-      rows[i] = new Array(size);
+    this.initGrid();
+  }
+
+  initGrid() {
+    let getRow = i => Math.floor(i / this.columnCount);
+    let getColumn = i => i % this.columnCount;
+
+    let boxValue = i => {
+      let boxRow = Math.floor(getRow(i) / this.boxHeight);
+      let boxColumn = Math.floor(getColumn(i) / this.boxWidth);
+      return boxRow * Math.floor(this.columnCount / this.boxWidth) + boxColumn;
     }
+
+    this.cells = Array(this.rowCount * this.columnCount).fill(null)
+      .map((el, i) => ({
+        row: getRow(i),
+        column: getColumn(i),
+        box: boxValue(i)
+      }));
+
   }
 
   getBorderTypes(x, y) {
     let getUpperBorder = (x, y) => x === 0 ? BorderType.OUTER :
       (x % this.boxHeight === 0 ? BorderType.INNER_BOX : BorderType.NORMAL);
 
-    let getRightBorder = (x, y) => y+1 === this.columns ? BorderType.OUTER :
+    let getRightBorder = (x, y) => y+1 === this.columnCount ? BorderType.OUTER :
       ((y+1) % this.boxWidth === 0 ? BorderType.INNER_BOX : BorderType.NORMAL);
 
-    let getBottomBorder = (x, y) => x+1 === this.rows ? BorderType.OUTER :
+    let getBottomBorder = (x, y) => x+1 === this.rowCount ? BorderType.OUTER :
       ((x+1) % this.boxHeight === 0 ? BorderType.INNER_BOX : BorderType.NORMAL);
 
     let getLeftBorder = (x, y) => y === 0 ? BorderType.OUTER :
@@ -33,17 +49,24 @@ class Puzzle {
     ];
   }
 
-
-
   getClueGrid() {
-    return [
+    console.log(this.cells);
+    let grid = new Array(this.rowCount);
+    for (let i = 0; i < this.rowCount; i++) {
+      grid[i] = new Array(this.columnCount);
+      for (let j = 0; j < this.columnCount; j++) {
+        grid[i][j] = this.cells[i*this.columnCount + j].box;
+      }
+    }
+    return grid;
+    /*return [
       [null, null, null, 1, 3, 6],
       [1, 6, 3, 5, null, null],
       [null, 2, null, null, 4, null],
       [null, 3, null, null, null, 2],
       [null, 5, 2, 4, 6, null],
       [null, 1, null, null, null, 3]
-    ];
+    ];*/
   }
 
   getSolutionGrid() {
