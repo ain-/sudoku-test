@@ -44,13 +44,16 @@ class Puzzle {
 
   checkValid() {
     let correctSum = Array.from({length: this.uniqueSymbols}, (v, i) => i + 1).reduce((acc, v) => acc + v, 0);
+    let correctProduct = Array.from({length: this.uniqueSymbols}, (v, i) => i + 1).reduce((acc, v) => acc * v, 1);
     let checkSets = set => {
+      let allCorrect = true;
       set.forEach(cells => {
         let setSum = cells.reduce((acc, cell) => acc + cell.value, 0);
-        if (setSum !== correctSum)
-          return false;
+        let setProduct = cells.reduce((acc, cell) => acc * cell.value, 1);
+        if (setSum !== correctSum || setProduct !== correctProduct)
+          allCorrect = false;
       });
-      return true;
+      return allCorrect;
     }
     return checkSets(this.rows)
       && checkSets(this.columns)
@@ -65,7 +68,6 @@ class Puzzle {
       this.setRandomValue(cell);
       this.reductionLoop(cell);
     }
-    //checkValid();
   }
 
   findEmptyCellsLeft() {
