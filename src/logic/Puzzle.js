@@ -3,8 +3,10 @@ import BorderType from './BorderType';
 class Puzzle {
   constructor(size, boxWidth, boxHeight) {
     this.size = size;
+    this.uniqueSymbols = size;
     this.rowCount = size;
     this.columnCount = size;
+    this.boxCount = size;
     this.boxWidth = boxWidth;
     this.boxHeight = boxHeight;
     this.initGrid();
@@ -29,17 +31,30 @@ class Puzzle {
         candidates: Array.from({length: this.size}, (v, i) => i + 1),
         value: null
       }));
-    this.rows = Array.from({length: this.rowCount}, )
+
+    this.rows = Array.from({length: this.rowCount}, (v, i) => []);
+    this.cells.forEach(cell => this.rows[cell.row].push(cell));
+
+    this.columns = Array.from({length: this.columnCount}, (v, i) => []);
+    this.cells.forEach(cell => this.columns[cell.column].push(cell));
+
+    this.boxes = Array.from({length: this.boxCount}, (v, i) => []);
+    this.cells.forEach(cell => this.boxes[cell.box].push(cell));
   }
 
   generateUniqueFullGrid() {
-    for (let emptyCellsLeft = this.cells.length; emptyCellsLeft !== 0; emptyCellsLeft--) {
+    while (this.findEmptyCellsLeft() !== 0) {
+      let emptyCellsLeft = this.findEmptyCellsLeft();
       let cell = this.findRandomEmptyCell(emptyCellsLeft);
 
       this.setRandomValue(cell);
-      this.removeCandidates(cell);
+      this.reductionLoop(cell);
     }
     //checkValid();
+  }
+
+  findEmptyCellsLeft() {
+    return this.cells.reduce((acc, c) => c.value === null ? acc + 1 : acc, 0);
   }
 
   setRandomValue(cell) {
@@ -48,13 +63,59 @@ class Puzzle {
     cell.candidates = null;
   }
 
+  reductionLoop(cell) {
+    this.removeCandidates(cell);
+    let removed = this.removeSingletons();
+    if (removed) {
+      this.reductionLoop(removed);
+    }
+  }
+
+  removeSingletons() {
+    let remove = (set) => {
+      for (let candidate = 0; candidate < this.uniqueSymbols; candidate++) {
+        let valueCount = 0, lastCell = null;
+        for (let cell in set) {
+          if (cell.value === null) {
+            if (cell.candidates.includes(candidate)) {
+              valueCount++;
+              lastCell = cell;
+            }
+          }
+        }
+        //if (valueCount === 0)
+        //  throw new Error("ran out of candidates");
+        if (valueCount === 1) {
+          lastCell.candidates = null;
+          lastCell.value = candidate;
+          return lastCell;
+        }
+      }
+      return null;
+    };
+
+    let val;
+    val = remove(this.rows);
+    if (val) return val;
+    val = remove(this.columns);
+    if (val) return val;
+    val = remove(this.boxes);
+    return val;
+  }
+
   removeCandidates(cell) {
     this.cells.forEach(c => {
       if (c.candidates !== null) {
         if (c.row === cell.row || c.column === cell.column || c.box === cell.box) {
           let candidateToRemoveIndex = c.candidates.indexOf(cell.value);
-          if (candidateToRemoveIndex !== -1)
+          if (candidateToRemoveIndex !== -1) {
             c.candidates.splice(candidateToRemoveIndex, 1);
+            if (c.candidates.length === 1) {
+              c.value = c.candidates[0];
+              c.candidates = null;
+              this.removeCandidates(c);
+            }
+          }
         }
       }
     });
