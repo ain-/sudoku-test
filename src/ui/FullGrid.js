@@ -6,16 +6,21 @@ import BorderType from '../logic/BorderType';
 class FullGrid extends Component {
   constructor() {
     super();
-    //var t0 = performance.now();
-    //createPuzzles(100);
-    //var t1 = performance.now();
-    //console.log((t1 - t0) + " milliseconds.")
+    this.createPuzzles(1000);
     this.state = {puzzle: new Puzzle(9, 3, 3)};
     console.log(this.state.puzzle.checkValid());
   }
 
   createPuzzles(count) {
-
+    let t0 = performance.now();
+    let valid = 0;
+    for (let i = 0; i < count; i++) {
+      let puzzle = new Puzzle(9, 3, 3);
+      if (puzzle.checkValid())
+        valid++;
+    }
+    let t1 = performance.now();
+    console.log(`${valid}/${count} , ${t1 - t0} milliseconds.`)
   }
 
   render() {
