@@ -2,11 +2,13 @@ import BorderType from './BorderType';
 
 class Puzzle {
   constructor(size, boxWidth, boxHeight) {
+    this.size = size;
     this.rowCount = size;
     this.columnCount = size;
     this.boxWidth = boxWidth;
     this.boxHeight = boxHeight;
     this.initGrid();
+    this.generateUniqueFullGrid();
   }
 
   initGrid() {
@@ -23,9 +25,56 @@ class Puzzle {
       .map((el, i) => ({
         row: getRow(i),
         column: getColumn(i),
-        box: boxValue(i)
+        box: boxValue(i),
+        candidates: Array.from({length: this.size}, (v, i) => i + 1),
+        value: null
       }));
+    this.rows = Array.from({length: this.rowCount}, )
+  }
 
+  generateUniqueFullGrid() {
+    for (let emptyCellsLeft = this.cells.length; emptyCellsLeft !== 0; emptyCellsLeft--) {
+      let cell = this.findRandomEmptyCell(emptyCellsLeft);
+
+      this.setRandomValue(cell);
+      this.removeCandidates(cell);
+    }
+    //checkValid();
+  }
+
+  setRandomValue(cell) {
+    let index = this.getRandomInt(1, cell.candidates.length) - 1;
+    cell.value = cell.candidates[index];
+    cell.candidates = null;
+  }
+
+  removeCandidates(cell) {
+    this.cells.forEach(c => {
+      if (c.candidates !== null) {
+        if (c.row === cell.row || c.column === cell.column || c.box === cell.box) {
+          let candidateToRemoveIndex = c.candidates.indexOf(cell.value);
+          if (candidateToRemoveIndex !== -1)
+            c.candidates.splice(candidateToRemoveIndex, 1);
+        }
+      }
+    });
+  }
+
+  findRandomEmptyCell(emptyCellsLeft) {
+    let randomCell = this.getRandomInt(1, emptyCellsLeft);
+    let emptyCounter = 0, i = 0;
+    while (true) {
+      if (this.cells[i].value === null) {
+        emptyCounter++;
+        if (emptyCounter === randomCell)
+          return this.cells[i];
+      }
+      i++;
+    }
+  }
+
+  getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   getBorderTypes(x, y) {
@@ -55,7 +104,7 @@ class Puzzle {
     for (let i = 0; i < this.rowCount; i++) {
       grid[i] = new Array(this.columnCount);
       for (let j = 0; j < this.columnCount; j++) {
-        grid[i][j] = this.cells[i*this.columnCount + j].box;
+        grid[i][j] = this.cells[i*this.columnCount + j].value;
       }
     }
     return grid;
