@@ -6,8 +6,18 @@ import BorderType from '../logic/BorderType';
 class FullGrid extends Component {
   constructor() {
     super();
-    this.state = {puzzle: new Puzzle(4, 2, 2)};
+    //var t0 = performance.now();
+    //createPuzzles(100);
+    //var t1 = performance.now();
+    //console.log((t1 - t0) + " milliseconds.")
+    this.state = {puzzle: new Puzzle(9, 3, 3)};
+    console.log(this.state.puzzle.checkValid());
   }
+
+  createPuzzles(count) {
+
+  }
+
   render() {
     let gridHeight = window.innerHeight * 0.8;
     let gridWidth = gridHeight;

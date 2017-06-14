@@ -42,6 +42,21 @@ class Puzzle {
     this.cells.forEach(cell => this.boxes[cell.box].push(cell));
   }
 
+  checkValid() {
+    let correctSum = Array.from({length: this.uniqueSymbols}, (v, i) => i + 1).reduce((acc, v) => acc + v, 0);
+    let checkSets = set => {
+      set.forEach(cells => {
+        let setSum = cells.reduce((acc, cell) => acc + cell.value, 0);
+        if (setSum !== correctSum)
+          return false;
+      });
+      return true;
+    }
+    return checkSets(this.rows)
+      && checkSets(this.columns)
+      && checkSets(this.boxes);
+  }
+
   generateUniqueFullGrid() {
     while (this.findEmptyCellsLeft() !== 0) {
       let emptyCellsLeft = this.findEmptyCellsLeft();
@@ -75,7 +90,7 @@ class Puzzle {
     let remove = (set) => {
       for (let candidate = 0; candidate < this.uniqueSymbols; candidate++) {
         let valueCount = 0, lastCell = null;
-        for (let cell in set) {
+        for (let cell in set) { //TODO: FIX
           if (cell.value === null) {
             if (cell.candidates.includes(candidate)) {
               valueCount++;
@@ -119,6 +134,7 @@ class Puzzle {
         }
       }
     });
+    //return null;
   }
 
   findRandomEmptyCell(emptyCellsLeft) {
