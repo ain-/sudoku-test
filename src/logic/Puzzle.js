@@ -90,25 +90,30 @@ class Puzzle {
 
   removeSingletons() {
     let remove = (set) => {
-      for (let candidate = 0; candidate < this.uniqueSymbols; candidate++) {
-        let valueCount = 0, lastCell = null;
-        for (let cell in set) { //TODO: FIX
-          if (cell.value === null) {
-            if (cell.candidates.includes(candidate)) {
-              valueCount++;
-              lastCell = cell;
+      let lastCell = null;
+      let found = set.some(cells => {
+        for (let candidate = 1; candidate <= this.uniqueSymbols; candidate++) {
+          let valueCount = 0;
+          lastCell = null;
+          cells.forEach(cell => {
+            if (cell.value === null) {
+              if (cell.candidates.includes(candidate)) {
+                valueCount++;
+                lastCell = cell;
+              }
             }
+          });
+          //if (valueCount === 0)
+          //  throw new Error("ran out of candidates");
+          if (valueCount === 1) {
+            lastCell.candidates = null;
+            lastCell.value = candidate;
+            return true;
           }
         }
-        //if (valueCount === 0)
-        //  throw new Error("ran out of candidates");
-        if (valueCount === 1) {
-          lastCell.candidates = null;
-          lastCell.value = candidate;
-          return lastCell;
-        }
-      }
-      return null;
+        return false;
+      });
+      return found ? lastCell : null;
     };
 
     let val;
