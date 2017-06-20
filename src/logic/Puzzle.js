@@ -61,9 +61,11 @@ class Puzzle {
   }
 
   generateUniqueFullGrid() {
-    while (this.findEmptyCellsLeft() !== 0) {
-      let cell = this.findRandomEmptyCell();
-
+    let cell;
+    while (true) {
+      cell = this.findRandomEmptyCell();
+      if (cell === null)
+        break;
       this.setRandomValue(cell);
       this.reductionLoop(cell);
     }
@@ -161,8 +163,6 @@ class Puzzle {
     }
     return null;
   }
-
-
 
   getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
