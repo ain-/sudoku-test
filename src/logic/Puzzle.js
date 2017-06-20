@@ -1,4 +1,5 @@
 import BorderType from './BorderType';
+import CellRemoval from './CellRemoval';
 
 class Puzzle {
   constructor(size, boxWidth, boxHeight) {
@@ -14,20 +15,20 @@ class Puzzle {
   }
 
   initGrid() {
-    let getRow = i => Math.floor(i / this.columnCount);
-    let getColumn = i => i % this.columnCount;
+    let rowIndex = i => Math.floor(i / this.columnCount);
+    let columnIndex = i => i % this.columnCount;
 
-    let boxValue = i => {
-      let boxRow = Math.floor(getRow(i) / this.boxHeight);
-      let boxColumn = Math.floor(getColumn(i) / this.boxWidth);
+    let boxIndex = i => {
+      let boxRow = Math.floor(rowIndex(i) / this.boxHeight);
+      let boxColumn = Math.floor(columnIndex(i) / this.boxWidth);
       return boxRow * Math.floor(this.columnCount / this.boxWidth) + boxColumn;
     }
 
     this.cells = Array(this.rowCount * this.columnCount).fill(null)
       .map((el, i) => ({
-        row: getRow(i),
-        column: getColumn(i),
-        box: boxValue(i),
+        row: rowIndex(i),
+        column: columnIndex(i),
+        box: boxIndex(i),
         candidates: Array.from({length: this.size}, (v, i) => i + 1),
         value: null
       }));
