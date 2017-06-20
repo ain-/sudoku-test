@@ -62,16 +62,11 @@ class Puzzle {
 
   generateUniqueFullGrid() {
     while (this.findEmptyCellsLeft() !== 0) {
-      let emptyCellsLeft = this.findEmptyCellsLeft();
-      let cell = this.findRandomEmptyCell(emptyCellsLeft);
+      let cell = this.findRandomEmptyCell();
 
       this.setRandomValue(cell);
       this.reductionLoop(cell);
     }
-  }
-
-  findEmptyCellsLeft() {
-    return this.cells.reduce((acc, c) => c.value === null ? acc + 1 : acc, 0);
   }
 
   setRandomValue(cell) {
@@ -144,18 +139,30 @@ class Puzzle {
     //return null;
   }
 
-  findRandomEmptyCell(emptyCellsLeft) {
-    let randomCell = this.getRandomInt(1, emptyCellsLeft);
-    let emptyCounter = 0, i = 0;
-    while (true) {
-      if (this.cells[i].value === null) {
-        emptyCounter++;
-        if (emptyCounter === randomCell)
+  findEmptyCellsLeft() {
+    return this.cells.reduce((acc, c) => c.value === null ? acc + 1 : acc, 0);
+  }
+
+  findRandomEmptyCell() {
+    return this.findRandomCell(cell => cell.value === null);
+  }
+
+  findRandomCell(cellFunc) {
+    let cellsLeft = this.cells.reduce((acc, c) => cellFunc(c) ? acc + 1 : acc, 0);
+    let randomCell = this.getRandomInt(1, cellsLeft);
+    let cellCounter = 0, i = 0;
+    while (i < this.cells.length) {
+      if (cellFunc(this.cells[i])) {
+        cellCounter++;
+        if (cellCounter === randomCell)
           return this.cells[i];
       }
       i++;
     }
+    return null;
   }
+
+
 
   getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

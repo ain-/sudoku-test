@@ -7,7 +7,7 @@ class FullGrid extends Component {
   constructor() {
     super();
     this.createPuzzles(1000);
-    this.state = {puzzle: new Puzzle(6, 3, 2)};
+    this.state = {puzzle: new Puzzle(9, 3, 3)};
     console.log(this.state.puzzle.checkValid());
   }
 
